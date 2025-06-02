@@ -1,10 +1,6 @@
 package com.markoccini.toolkit.poll.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +27,7 @@ public class Poll {
     private String question;
 
     @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Choice> choices = new HashSet<>();
+    private Set<Choice> choices = new HashSet<>();  // Fixes with Choice Object
 
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
@@ -40,6 +36,6 @@ public class Poll {
 
     public void addChoice(Choice choice) {
         choices.add(choice);
-        choice.setPoll(this);
+        choice.setPoll(this);   // Comes with Getter and Setters in Choice Object via Lombok
     }
 }
