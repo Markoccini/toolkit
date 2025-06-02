@@ -1,4 +1,4 @@
 package com.markoccini.toolkit.poll.model;
 
-public record Poll() {
+public record ChoiceRequest() {
 }

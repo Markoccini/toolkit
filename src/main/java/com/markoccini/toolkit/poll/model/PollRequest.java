@@ -1,4 +1,4 @@
 package com.markoccini.toolkit.poll.model;
 
-public class Vote {
+public record PollRequest() {
 }
