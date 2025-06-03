@@ -32,7 +32,7 @@ public class Choice {
     Long id;
 
     @Column(nullable = false)
-    String answer;
+    String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Poll poll;

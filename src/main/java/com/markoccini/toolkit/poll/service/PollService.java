@@ -3,7 +3,6 @@ package com.markoccini.toolkit.poll.service;
 import com.markoccini.toolkit.common.PollClosedException;
 import com.markoccini.toolkit.common.PollNotFoundException;
 import com.markoccini.toolkit.poll.dto.PollRequest;
-import com.markoccini.toolkit.poll.dto.PollResponse;
 import com.markoccini.toolkit.poll.model.Choice;
 import com.markoccini.toolkit.poll.model.Poll;
 import com.markoccini.toolkit.poll.repository.ChoiceRepository;
@@ -42,7 +41,7 @@ public class PollService {
 
         pollRequest.choices().forEach(choiceText -> {
             Choice choice = new Choice();
-            choice.setAnswer(choiceText);
+            choice.setContent(choiceText);
             poll.addChoice(choice);
         });
         Poll savedPoll = pollRepository.save(poll);
