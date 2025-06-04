@@ -2,7 +2,9 @@ package com.markoccini.toolkit.poll.service;
 
 import com.markoccini.toolkit.common.PollClosedException;
 import com.markoccini.toolkit.common.PollNotFoundException;
+import com.markoccini.toolkit.poll.dto.ChoiceResponse;
 import com.markoccini.toolkit.poll.dto.PollRequest;
+import com.markoccini.toolkit.poll.dto.PollResponse;
 import com.markoccini.toolkit.poll.model.Choice;
 import com.markoccini.toolkit.poll.model.Poll;
 import com.markoccini.toolkit.poll.repository.ChoiceRepository;
@@ -12,6 +14,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class PollService {
@@ -32,7 +38,7 @@ public class PollService {
     }
 
     @Transactional
-    public void createPoll(PollRequest pollRequest) { // TODO: replace void by PollResponse
+    public PollResponse createPoll(PollRequest pollRequest) {
         Poll poll = new Poll();
         poll.setQuestion(pollRequest.question());
         poll.setCreatedAt(LocalDateTime.now());
@@ -45,7 +51,7 @@ public class PollService {
             poll.addChoice(choice);
         });
         Poll savedPoll = pollRepository.save(poll);
-        // TODO: add return
+        return PollToPollResponse(savedPoll);
     }
 
     @Transactional
@@ -65,5 +71,28 @@ public class PollService {
         catch (Exception e) {
             System.out.println(e.getMessage()); // TODO: Replace by proper handling
         }
+    }
+
+    public PollResponse PollToPollResponse(Poll poll) {
+        Map<Long, Long> voteCounts = new HashMap<>();
+        poll.getChoices().forEach(choice -> {
+            voteCounts.put(choice.getId(), voteRepository.countByChoiceId(choice.getId()));
+        });
+
+        List<ChoiceResponse> choices = new ArrayList<>();
+        for (Choice choice : poll.getChoices()) {
+            ChoiceResponse choiceResponse = new ChoiceResponse(choice.getId(), choice.getContent());
+            choices.add(choiceResponse);
+        }
+
+        return new PollResponse(
+                poll.getId(),
+                poll.getQuestion(),
+                choices,
+                poll.getCreatedAt(),
+                poll.getExpiresAt(),
+                poll.isClosed(),
+                voteCounts
+        );
     }
 }
