@@ -37,7 +37,7 @@ public class Choice {
     @ManyToOne(fetch = FetchType.LAZY)
     private Poll poll;
 
-    @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "choice", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Vote> votes = new HashSet<>();
 
 

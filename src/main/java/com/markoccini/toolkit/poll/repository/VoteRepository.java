@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface VoteRepository extends JpaRepository<Vote, Long> {
     Optional<Vote> findByIdAndPollId(Long id, Long pollId);
-    long countByOptionId(Long optionId);
+    long countByChoiceId(Long choiceId);
 }
