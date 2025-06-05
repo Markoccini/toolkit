@@ -1,5 +1,6 @@
 package com.markoccini.toolkit.poll.controller;
 
+import com.markoccini.toolkit.poll.dto.PollUpdateRequest;
 import com.markoccini.toolkit.poll.service.PollService;
 import com.markoccini.toolkit.poll.dto.PollRequest;
 import com.markoccini.toolkit.poll.dto.PollResponse;
@@ -24,14 +25,28 @@ public class PollController {
 
 
     @GetMapping("/create")
-    public ResponseEntity<String> createPoll() {
-        return ResponseEntity.ok().body("Enter Values here");
+    public ResponseEntity<String> createPollGet() {
+        return ResponseEntity.ok().body("Erstellen einer Abstimmung: ");
     }
 
-
     @PostMapping("/create")
-    public ResponseEntity<PollResponse> createNewPoll(@Validated @RequestBody PollRequest pollRequest) {
+    public ResponseEntity<PollResponse> createPollPost(@Validated @RequestBody PollRequest pollRequest) {
         PollResponse pollresponse = pollService.createPoll(pollRequest);
         return ResponseEntity.ok().body(pollresponse);
+    }
+
+    @GetMapping("/<id>/edit")
+    public ResponseEntity<String> updatePollGet(@RequestParam("id") Long id) {
+        return ResponseEntity.ok().body("Wählen Sie die zu verändernden Eigenschaften: ");
+    }
+
+    @PostMapping("<id>/edit")
+    public ResponseEntity<PollResponse> updatePollPost(
+            @Validated
+            @PathVariable Long pollId,
+            @RequestBody PollUpdateRequest pollUpdateRequest
+    ) {
+        PollResponse pollResponse = pollService.updatePoll(pollId, pollUpdateRequest);
+        return ResponseEntity.ok().body(pollResponse);
     }
 }
