@@ -100,9 +100,10 @@ public class PollService {
 
     public PollResponse PollToPollResponse(Poll poll) {
         Map<Long, Long> voteCounts = new HashMap<>();
-        poll.getChoices().forEach(choice -> {
-            voteCounts.put(choice.getId(), voteRepository.countByChoiceId(choice.getId()));
-        });
+        poll.getChoices().forEach(choice -> voteCounts.put(
+                choice.getId(),
+                voteRepository.countByChoiceId(choice.getId()))
+        );
 
         List<ChoiceResponse> choices = new ArrayList<>();
         for (Choice choice : poll.getChoices()) {
