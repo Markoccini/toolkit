@@ -73,6 +73,29 @@ public class PollService {
         }
     }
 
+
+    public Poll getPollFromDB(Long pollId) throws PollNotFoundException, PollClosedException {
+        try {
+            Poll poll = pollRepository.findById(pollId).orElse(null);
+            if (poll == null) {
+                throw new PollNotFoundException(String.format("Poll with id %d not found.", pollId));
+            }
+            if (poll.isClosed()) {
+                throw new PollClosedException(String.format("Poll with id %d is already closed.", pollId));
+            }
+            return poll;
+        }
+        catch (PollNotFoundException | PollClosedException e) {
+            System.out.println(e.getMessage()); // TODO: Replace by proper handling
+            throw e;
+        }
+    }
+
+
+//    public PollResponse PollExceptionWrapper() {
+//
+//    }
+
     public PollResponse PollToPollResponse(Poll poll) {
         Map<Long, Long> voteCounts = new HashMap<>();
         poll.getChoices().forEach(choice -> {
