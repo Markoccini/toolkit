@@ -5,6 +5,7 @@ import com.markoccini.toolkit.common.PollNotFoundException;
 import com.markoccini.toolkit.poll.dto.ChoiceResponse;
 import com.markoccini.toolkit.poll.dto.PollRequest;
 import com.markoccini.toolkit.poll.dto.PollResponse;
+import com.markoccini.toolkit.poll.dto.PollUpdateRequest;
 import com.markoccini.toolkit.poll.model.Choice;
 import com.markoccini.toolkit.poll.model.Poll;
 import com.markoccini.toolkit.poll.repository.ChoiceRepository;
@@ -37,6 +38,7 @@ public class PollService {
         this.voteRepository = voteRepository;
     }
 
+
     @Transactional
     public PollResponse createPoll(PollRequest pollRequest) {
         Poll poll = new Poll();
@@ -54,23 +56,23 @@ public class PollService {
         return PollToPollResponse(savedPoll);
     }
 
+
     @Transactional
-    public void updatePoll(Long pollId, PollRequest pollRequest) {
-        try {
-            Poll poll = pollRepository.findById(pollId).orElse(null);
-            if (poll == null) {
-                throw new PollNotFoundException("Poll not found.");
-            }
-            if (poll.isClosed()) {
-                throw new PollClosedException("Poll is already closed!");
-            }
-            poll.setQuestion(pollRequest.question());
-            poll.setExpiresAt(pollRequest.expiresAt());
-            // TODO: save to DB
+    public PollResponse updatePoll(Long pollId, PollUpdateRequest pollUpdateRequest) throws PollClosedException, PollNotFoundException {
+        Poll poll = getPollFromDB(pollId);
+        if (pollUpdateRequest.toggle().isPresent() && pollUpdateRequest.toggle().get()) {
+            poll.setClosed(true);
         }
-        catch (Exception e) {
-            System.out.println(e.getMessage()); // TODO: Replace by proper handling
+        else {
+            if (pollUpdateRequest.question().isPresent()) {
+                poll.setQuestion(pollUpdateRequest.question().get());
+            }
+            if (pollUpdateRequest.expiresAt().isPresent()) {
+                poll.setExpiresAt(pollUpdateRequest.expiresAt().get());
+            }
         }
+        Poll savedPoll = pollRepository.save(poll);
+        return PollToPollResponse(savedPoll);
     }
 
 
