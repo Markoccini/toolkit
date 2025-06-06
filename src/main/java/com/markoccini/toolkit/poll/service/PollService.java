@@ -1,7 +1,7 @@
 package com.markoccini.toolkit.poll.service;
 
 import com.markoccini.toolkit.common.PollClosedException;
-import com.markoccini.toolkit.common.PollNotFoundException;
+import com.markoccini.toolkit.common.PollClosedOrNullException;
 import com.markoccini.toolkit.poll.dto.ChoiceResponse;
 import com.markoccini.toolkit.poll.dto.PollRequest;
 import com.markoccini.toolkit.poll.dto.PollResponse;
@@ -58,45 +58,47 @@ public class PollService {
 
 
     @Transactional
-    public PollResponse updatePoll(Long pollId, PollUpdateRequest pollUpdateRequest) throws PollClosedException, PollNotFoundException {
-        Poll poll = getPollFromDB(pollId);
-        if (pollUpdateRequest.toggle().isPresent() && pollUpdateRequest.toggle().get()) {
-            poll.setClosed(true);
-        }
-        else {
-            if (pollUpdateRequest.question().isPresent()) {
-                poll.setQuestion(pollUpdateRequest.question().get());
-            }
-            if (pollUpdateRequest.expiresAt().isPresent()) {
-                poll.setExpiresAt(pollUpdateRequest.expiresAt().get());
-            }
-        }
-        Poll savedPoll = pollRepository.save(poll);
-        return PollToPollResponse(savedPoll);
-    }
-
-
-    public Poll getPollFromDB(Long pollId) throws PollNotFoundException, PollClosedException {
+    public PollResponse updatePoll(Long pollId, PollUpdateRequest pollUpdateRequest) throws PollClosedOrNullException {
         try {
-            Poll poll = pollRepository.findById(pollId).orElse(null);
-            if (poll == null) {
-                throw new PollNotFoundException(String.format("Poll with id %d not found.", pollId));
+            Poll poll = getPollFromDB(pollId);
+            if (pollUpdateRequest.toggle().isPresent() && pollUpdateRequest.toggle().get()) {
+                poll.setClosed(true);
+            } else {
+                if (pollUpdateRequest.question().isPresent()) {
+                    poll.setQuestion(pollUpdateRequest.question().get());
+                }
+                if (pollUpdateRequest.expiresAt().isPresent()) {
+                    poll.setExpiresAt(pollUpdateRequest.expiresAt().get());
+                }
             }
-            if (poll.isClosed()) {
-                throw new PollClosedException(String.format("Poll with id %d is already closed.", pollId));
-            }
-            return poll;
+            Poll savedPoll = pollRepository.save(poll);
+            return PollToPollResponse(savedPoll);
         }
-        catch (PollNotFoundException | PollClosedException e) {
-            System.out.println(e.getMessage()); // TODO: Replace by proper handling
-            throw e;
+        catch (java.sql.SQLException | PollClosedException e) {
+            System.err.println(e.getMessage());
+            if (e.getClass().getSimpleName().equals("PollClosedException")) {
+                throw new PollClosedOrNullException(String.format(
+                        "Poll with id %d is closed.", pollId));
+            }
+            else {
+                throw new PollClosedOrNullException(String.format(
+                        "Poll with id %d  doesn't exist anymore.", pollId));
+            }
         }
     }
 
 
-//    public PollResponse PollExceptionWrapper() {
-//
-//    }
+    public Poll getPollFromDB(Long pollId) throws java.sql.SQLException, PollClosedException {
+        Poll poll = pollRepository.findById(pollId).orElse(null);
+        if (poll == null) {
+            throw new java.sql.SQLException("Poll does not exist.");
+        }
+        if (poll.isClosed()) {
+            throw new PollClosedException(String.format("Poll with id %d is already closed.", pollId));
+        }
+        return poll;
+    }
+
 
     public PollResponse PollToPollResponse(Poll poll) {
         Map<Long, Long> voteCounts = new HashMap<>();

@@ -1,12 +1,16 @@
 package com.markoccini.toolkit.poll.controller;
 
+import com.markoccini.toolkit.common.PollClosedOrNullException;
 import com.markoccini.toolkit.poll.dto.PollUpdateRequest;
 import com.markoccini.toolkit.poll.service.PollService;
 import com.markoccini.toolkit.poll.dto.PollRequest;
 import com.markoccini.toolkit.poll.dto.PollResponse;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("api/polls")
@@ -46,7 +50,12 @@ public class PollController {
             @PathVariable Long pollId,
             @RequestBody PollUpdateRequest pollUpdateRequest
     ) {
-        PollResponse pollResponse = pollService.updatePoll(pollId, pollUpdateRequest);
-        return ResponseEntity.ok().body(pollResponse);
+        try {
+            PollResponse pollResponse = pollService.updatePoll(pollId, pollUpdateRequest);
+            return ResponseEntity.ok().body(pollResponse);
+        }
+        catch (PollClosedOrNullException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 }
