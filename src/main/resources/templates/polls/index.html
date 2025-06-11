@@ -1,0 +1,11 @@
+{{ header }}
+
+<h1>Mustache with Spring boot</h1>
+<div> <b> Poll List </b> </div>
+{{ #PollList }}
+<b>Poll Id: </b> {{ id }}
+<b>Question:  </b> {{ question }}
+<b>Choices: </b> {{ choices }}
+<b>Created At: </b> {{ createdAt }}
+<b>Expires At: </b> {{ expiresAt }}
+<b>Closed: </b> {{ closed }}
