@@ -27,6 +27,11 @@ public class PollController {
         return ResponseEntity.ok().body("Hello World!");
     }
 
+    @GetMapping("/overview")
+    public ResponseEntity<String> getOverview() {
+        return ResponseEntity.ok().body("Overview");
+    }
+
 
     @GetMapping("/create")
     public ResponseEntity<String> createPollGet() {
