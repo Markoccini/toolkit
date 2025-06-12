@@ -60,7 +60,8 @@ public class PollService {
     @Transactional
     public PollResponse updatePoll(Long pollId, PollUpdateRequest pollUpdateRequest) throws PollClosedOrNullException {
         try {
-            Poll poll = getPollFromDB(pollId);
+            Poll poll = pollRepository.findById(pollId).orElse(null);
+            poll = pollIsValid(poll);
             if (pollUpdateRequest.toggle().isPresent() && pollUpdateRequest.toggle().get()) {
                 poll.setClosed(true);
             } else {
@@ -88,13 +89,12 @@ public class PollService {
     }
 
 
-    public Poll getPollFromDB(Long pollId) throws java.sql.SQLException, PollClosedException {
-        Poll poll = pollRepository.findById(pollId).orElse(null);
+    public Poll pollIsValid(Poll poll) throws java.sql.SQLException, PollClosedException {
         if (poll == null) {
             throw new java.sql.SQLException("Poll does not exist.");
         }
         if (poll.isClosed()) {
-            throw new PollClosedException(String.format("Poll with id %d is already closed.", pollId));
+            throw new PollClosedException(String.format("Poll with id %d is already closed.", poll.getId()));
         }
         return poll;
     }
