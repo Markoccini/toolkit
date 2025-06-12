@@ -1,0 +1,33 @@
+-- SQL INSERT statements for the 'polls' and 'choices' tables in PostgreSQL
+
+-- 1. Insert data into the 'polls' table
+
+-- Poll 1: "Cats or Dogs?"
+INSERT INTO polls (id, question, created_at, expires_at, closed)
+VALUES (1, 'Cats or Dogs?', NOW(), NOW() + INTERVAL '7 days', FALSE);
+
+-- Poll 2: "Tea, Coffee or Soda?"
+INSERT INTO polls (id, question, created_at, expires_at, closed)
+VALUES (2, 'Tea, Coffee or Soda?', NOW() - INTERVAL '3 hours', NOW(), TRUE);
+
+-- Poll 3: "Is this a test-poll?"
+INSERT INTO polls (id, question, created_at, expires_at, closed)
+VALUES (3, 'Is this a test-poll?', NOW() - INTERVAL '3 days 3 hours', NOW() + INTERVAL '8 hours', FALSE);
+
+
+-- 2. Insert data into the 'choices' table, linking them to the respective polls
+
+-- Choices for Poll 1 (id=1: "Cats or Dogs?")
+-- Assuming 'choices' table has columns: id, content, poll_id
+INSERT INTO choices (id, content, poll_id) VALUES (1, 'Cats', 1);
+INSERT INTO choices (id, content, poll_id) VALUES (2, 'Dogs', 1);
+
+-- Choices for Poll 2 (id=2: "Tea, Coffee or Soda?")
+INSERT INTO choices (id, content, poll_id) VALUES (3, 'Tea', 2);
+INSERT INTO choices (id, content, poll_id) VALUES (4, 'Coffee', 2);
+INSERT INTO choices (id, content, poll_id) VALUES (5, 'Soda', 2);
+
+-- Choices for Poll 3 (id=3: "Is this a test-poll?")
+INSERT INTO choices (id, content, poll_id) VALUES (6, 'Yes', 3);
+INSERT INTO choices (id, content, poll_id) VALUES (7, 'No', 3);
+
