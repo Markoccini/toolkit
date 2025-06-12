@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "polls")
+@Table(name = "choices")
 @Getter
 @Setter
 @NoArgsConstructor
