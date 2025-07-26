@@ -52,10 +52,7 @@ public class Poll {
         choices.remove(choice);
     }
 
-    public void closePoll(boolean new_state) {
+    public void closePoll() {
         assert  !this.isClosed;
-        if (new_state) {
-            this.isClosed = true;
-        }
     }
 }
