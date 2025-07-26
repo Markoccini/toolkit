@@ -2,6 +2,7 @@ package org.markoccini.toolkit.poll.model;
 
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +28,7 @@ public class Choice {
     @ManyToOne
     @JoinColumn(name = "poll_id")
     @Getter
-    @Setter
+    @Setter(AccessLevel.PACKAGE)
     private Poll poll;
 
     public Choice() {
