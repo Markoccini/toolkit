@@ -17,14 +17,4 @@ public class PollResponse {
     @NotBlank(message = "Creation data is required")
     private ZonedDateTime createdAt;
     private List<Long> choiceIds;
-
-    public PollResponse() {
-    }
-
-    public PollResponse(Long id, String question, ZonedDateTime createdAt, List<Long> choiceIds) {
-        this.id = id;
-        this.question = question;
-        this.createdAt = createdAt;
-        this.choiceIds = choiceIds;
-    }
 }
