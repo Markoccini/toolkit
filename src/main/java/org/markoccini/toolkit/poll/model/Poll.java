@@ -1,10 +1,7 @@
 package org.markoccini.toolkit.poll.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -12,23 +9,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "polls")
+@Table(name = "polls", schema= "polls")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Builder
 public class Poll {
 
     @Id
-    @Getter
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Setter
-    @Getter
     private String question;
 
-    @Getter
     private final ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Europe/Berlin"));
 
-    @Getter
     private boolean isClosed = false;
 
     @OneToMany(

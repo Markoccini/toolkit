@@ -2,37 +2,34 @@ package org.markoccini.toolkit.poll.model;
 
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-@Entity(name = "choices")
+@Entity
+@Table(name = "choices", schema = "polls")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
 public class Choice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Getter
     @Setter
     private String content;
 
-    private Long votes;
+    private Long votes = 0L;
 
-    @Getter
     private final ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Europe/Berlin"));
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "poll_id")
-    @Getter
-    @Setter(AccessLevel.PACKAGE)
+    @Setter
     private Poll poll;
-
-    public Choice() {
-    }
 
     public Choice(String content, Poll poll) {
         this.content = content;
@@ -40,9 +37,7 @@ public class Choice {
     }
 
     public void incrementVotes() {
-        if (this.votes < 3) {
-            this.votes++;
-        }
+        this.votes++;
     }
 
     public void decrementVotes() {
