@@ -11,5 +11,5 @@ public class ChoiceResponse {
     private String content;
     private Long votes;
     private ZonedDateTime createdAt;
-    private Long pollId;
+    private PollResponse pollResponse;
 }

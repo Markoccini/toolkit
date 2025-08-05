@@ -1,19 +1,26 @@
 package org.markoccini.toolkit.poll.controller;
 
+import org.markoccini.toolkit.poll.dto.PollRequest;
 import org.markoccini.toolkit.poll.dto.PollResponse;
 import org.markoccini.toolkit.poll.model.Choice;
 import org.markoccini.toolkit.poll.model.Poll;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import org.markoccini.toolkit.poll.service.PollService;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/v1/polls")
 public class PollController {
+
+    final PollService pollService;
+
+    public PollController(PollService pollService) {
+        this.pollService = pollService;
+    }
 
     @GetMapping("/test")
     public String index(Model model) {
@@ -39,7 +46,17 @@ public class PollController {
     }
 
     @GetMapping("")
-    public List<PollResponse> getAllPolls(Model model) {
-        return new ArrayList<>(); // TODO: Implement
+    public List<PollResponse> getPolls() {
+        return pollService.getAllPolls();
+    }
+
+    @GetMapping("/{pollId}")
+    public PollResponse getPoll(@PathVariable("pollId") Long pollId) throws Exception {
+        return pollService.getPollById(pollId);
+    }
+
+    @PostMapping
+    public PollResponse createPoll(@RequestBody PollRequest pollRequest) {
+        return pollService.createPoll(pollRequest);
     }
 }
