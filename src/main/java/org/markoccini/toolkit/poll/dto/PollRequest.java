@@ -13,5 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PollRequest {
     private String question;
-    private List<ChoiceRequest> choices;
+    private List<ChoiceRequest> choiceRequests;
+    private boolean isClosed;
 }
