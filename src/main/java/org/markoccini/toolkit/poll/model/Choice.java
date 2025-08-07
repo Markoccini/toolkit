@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 @Table(name = "choices", schema = "polls")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Getter
 public class Choice {
 
