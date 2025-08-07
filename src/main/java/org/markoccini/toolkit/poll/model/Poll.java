@@ -25,6 +25,7 @@ public class Poll {
 
     private final ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Europe/Berlin"));
 
+    @Builder.Default
     private boolean isClosed = false;
 
     @OneToMany(

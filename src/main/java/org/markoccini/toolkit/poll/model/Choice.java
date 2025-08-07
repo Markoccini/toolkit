@@ -22,6 +22,7 @@ public class Choice {
     @Setter
     private String content;
 
+    @Builder.Default
     private Long votes = 0L;
 
     private final ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Europe/Berlin"));
