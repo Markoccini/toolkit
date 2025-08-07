@@ -21,29 +21,6 @@ public class PollController {
         this.pollService = pollService;
     }
 
-    @GetMapping("/test")
-    public String index(Model model) {
-
-        List<Poll> polls = new ArrayList<>();
-
-        Poll poll = new Poll(
-                "Hunde oder Katzen?",
-                new ArrayList<Choice>()
-        );
-
-        Poll poll2 = new Poll(
-                "Tee oder Kaffee?",
-                new ArrayList<Choice>()
-        );
-
-        polls.add(poll);
-        polls.add(poll2);
-
-        model.addAttribute("polls", polls);
-
-        return "polls/index";
-    }
-
     @GetMapping("")
     public List<PollResponse> getPolls() {
         return pollService.getAllPolls();
