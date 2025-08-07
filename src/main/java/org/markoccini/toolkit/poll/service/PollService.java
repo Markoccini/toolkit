@@ -46,10 +46,16 @@ public class PollService {
         }
     }
 
+    @Transactional
     public PollResponse createPoll(PollRequest pollRequest) {
         Poll poll = PollRequestToPollMapper(pollRequest);
-        poll = pollRepository.save(poll);
-        return PollToPollResponseMapper(poll);
+
+        for (ChoiceRequest choiceRequest : pollRequest.getChoiceRequests()) {
+            Choice choice = ChoiceRequestToChoiceMapper(choiceRequest);
+            choiceRepository.save(choice);
+            poll.addChoice(choice);
+        }
+        return PollToPollResponseMapper(pollRepository.save(poll));
     }
 
     public Poll closePoll(Poll poll) {
@@ -95,43 +101,20 @@ public class PollService {
     public Poll PollRequestToPollMapper(PollRequest pollRequest) {
         assert pollRequest != null;
 
-        Poll poll = Poll.builder()
+        return Poll.builder()
                 .question(pollRequest.getQuestion())
+                .choices(new ArrayList<Choice>())
+                .isClosed(pollRequest.isClosed())
                 .build();
-
-        List<Choice> choices = new ArrayList<>();
-        if (pollRequest.getChoiceRequests() != null) {
-            for (ChoiceRequest choiceRequest : pollRequest.getChoiceRequests()) {
-                try {
-                    Choice choice = ChoiceRequestToChoiceMapper(choiceRequest);
-                    choice.setPoll(poll);
-                    choices.add(choice);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        for (Choice choice : choices) {
-            poll.addChoice(choice);
-        }
-        return poll;
     }
 
-    public Choice ChoiceRequestToChoiceMapper(ChoiceRequest choiceRequest) throws Exception {
-        Poll poll = pollRepository.findById(choiceRequest.getPollId()).orElse(null);
-        if  (poll != null) {
-            return Choice.builder()
-                    .content(choiceRequest.getContent())
-                    .poll(poll)
-                    .build();
+    public Choice ChoiceRequestToChoiceMapper(ChoiceRequest choiceRequest) {
+
+        return Choice.builder()
+                .content(choiceRequest.getContent())
+                .votes(choiceRequest.getVotes())
+                .build();
         }
-        else {
-            throw new Exception("Cannot assign Choice to Poll with id " +
-                    choiceRequest.getPollId() +
-                    ": Poll does not exist");
-        }
-    }
 
     public ChoiceResponse ChoiceToChoiceResponseMapper(Choice choice) {
         return ChoiceResponse.builder()
