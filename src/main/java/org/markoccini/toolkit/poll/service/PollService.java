@@ -63,14 +63,14 @@ public class PollService {
         return pollRepository.save(poll);
     }
 
-    public Poll removeChoice(Poll poll, Choice choice) {
-        poll.removeChoice(choice);
-        return  pollRepository.save(poll);
-    }
-
     public Poll addChoice(Poll poll, Choice choice) {
         poll.addChoice(choice);
         return pollRepository.save(poll);
+    }
+
+    public Poll removeChoice(Poll poll, Choice choice) {
+        poll.removeChoice(choice);
+        return  pollRepository.save(poll);
     }
 
     @Transactional
