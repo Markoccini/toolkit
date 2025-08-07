@@ -14,5 +14,5 @@ import java.util.List;
 public class PollRequest {
     private String question;
     private List<ChoiceRequest> choiceRequests;
-    private boolean isClosed;
+    private boolean isClosed = false;
 }
