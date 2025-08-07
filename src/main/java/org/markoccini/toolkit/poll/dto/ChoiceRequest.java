@@ -7,5 +7,4 @@ import lombok.Data;
 @Builder
 public class ChoiceRequest {
     private String content;
-    private Long pollId;
 }
