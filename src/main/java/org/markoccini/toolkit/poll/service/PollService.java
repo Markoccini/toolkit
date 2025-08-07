@@ -104,7 +104,6 @@ public class PollService {
         return Poll.builder()
                 .question(pollRequest.getQuestion())
                 .choices(new ArrayList<Choice>())
-                .isClosed(pollRequest.isClosed())
                 .build();
     }
 
@@ -112,7 +111,6 @@ public class PollService {
 
         return Choice.builder()
                 .content(choiceRequest.getContent())
-                .votes(choiceRequest.getVotes())
                 .build();
         }
 
