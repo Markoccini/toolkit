@@ -20,7 +20,6 @@ public class ChoiceMapper {
                 .content(choice.getContent())
                 .votes(choice.getVotes())
                 .createdAt(choice.getCreatedAt())
-                .pollResponse(PollToPollResponseMapper(choice.getPoll()))
                 .build();
     }
 }
