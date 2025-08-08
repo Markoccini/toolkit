@@ -4,7 +4,6 @@ import org.markoccini.toolkit.poll.dto.ChoiceRequest;
 import org.markoccini.toolkit.poll.dto.ChoiceResponse;
 import org.markoccini.toolkit.poll.model.Choice;
 
-import static org.markoccini.toolkit.poll.mapper.PollMapper.PollToPollResponseMapper;
 
 public class ChoiceMapper {
 
