@@ -17,5 +17,6 @@ public class PollResponse {
     @NotBlank(message = "Creation data is required")
     private List<Long> choiceIds;
     private Instant createdAt;
+    private List<ChoiceResponse> choiceResponses;
     private boolean isClosed;
 }

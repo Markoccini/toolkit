@@ -1,6 +1,7 @@
 package org.markoccini.toolkit.poll.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import org.markoccini.toolkit.poll.dto.ChoiceRequest;
 import org.markoccini.toolkit.poll.dto.PollRequest;
 import org.markoccini.toolkit.poll.dto.PollResponse;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,25 @@ public class PollController {
     public PollResponse createPoll(@RequestBody PollRequest pollRequest) {
         return pollService.createPoll(pollRequest);
     }
+
+    @Operation(tags = {"PATCH"})
+    @PatchMapping("/{pollId}/update-question")
+    public PollResponse updatePoll(
+            @PathVariable("pollId") Long pollId,
+            @RequestBody String newQuestion
+    ) throws Exception {
+        return pollService.editPollQuestion(pollId, newQuestion);
+    }
+
+    @Operation(tags = {"POST"})
+    @PostMapping("/{pollId}/add-choice")
+    public PollResponse addChoiceToPoll(
+            @PathVariable("pollId") Long pollId,
+            @RequestBody ChoiceRequest choiceRequest
+    ) throws Exception {
+        return pollService.addChoiceToPoll(pollId, choiceRequest);
+    }
+
 
     @Operation(tags = {"PATCH"})
     @PatchMapping("/{pollId}/close-poll")

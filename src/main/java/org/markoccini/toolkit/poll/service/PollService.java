@@ -52,6 +52,10 @@ public class PollService {
     public PollResponse createPoll(PollRequest pollRequest) {
         Poll poll = PollMapper.PollRequestToPollMapper(pollRequest);
 
+        if (pollRequest.getChoiceRequests() == null) {
+            pollRequest.setChoiceRequests(new ArrayList<>());
+        }
+
         for (ChoiceRequest choiceRequest : pollRequest.getChoiceRequests()) {
             Choice choice = ChoiceMapper.ChoiceRequestToChoiceMapper(choiceRequest);
             choiceRepository.save(choice);
