@@ -1,5 +1,6 @@
 package org.markoccini.toolkit.poll.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PollRequest {
+    @NotBlank(message = "Question needs to be set")
     private String question;
     private List<ChoiceRequest> choiceRequests;
 }
