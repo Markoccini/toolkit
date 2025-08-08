@@ -1,11 +1,13 @@
 package org.markoccini.toolkit.poll.mapper;
 
+import org.markoccini.toolkit.poll.dto.ChoiceResponse;
 import org.markoccini.toolkit.poll.dto.PollRequest;
 import org.markoccini.toolkit.poll.dto.PollResponse;
 import org.markoccini.toolkit.poll.model.Choice;
 import org.markoccini.toolkit.poll.model.Poll;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class PollMapper {
@@ -40,5 +42,4 @@ public class PollMapper {
                 .isClosed(poll.isClosed())
                 .build();
     }
-
 }
