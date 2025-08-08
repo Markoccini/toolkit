@@ -36,4 +36,10 @@ public class PollController {
     public PollResponse createPoll(@RequestBody PollRequest pollRequest) {
         return pollService.createPoll(pollRequest);
     }
+
+    @Operation(tags = {"PATCH"})
+    @PatchMapping("/{pollId}/close-poll")
+    public PollResponse closePoll(@PathVariable Long pollId) throws Exception {
+        return pollService.closePoll(pollId);
+    }
 }

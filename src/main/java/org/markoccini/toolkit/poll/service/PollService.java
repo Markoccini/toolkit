@@ -60,11 +60,16 @@ public class PollService {
         return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
     }
 
-    // TODO: Implement with proper DTO Handling
-
-    public Poll closePoll(Poll poll) {
-        poll.closePoll();
-        return pollRepository.save(poll);
+    @Transactional
+    public PollResponse closePoll(Long pollId) throws Exception {
+        Poll poll =  pollRepository.findById(pollId).orElse(null);
+        if (poll != null) {
+            poll.closePoll();
+            return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
+        }
+        else {
+            throw new Exception("Could not find poll with id " + pollId);
+        }
     }
 
     public Poll addChoiceToPoll(Poll poll, Choice choice) {

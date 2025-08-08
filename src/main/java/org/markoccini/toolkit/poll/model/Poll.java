@@ -50,5 +50,6 @@ public class Poll {
 
     public void closePoll() {
         assert  !this.isClosed;
+        this.isClosed = true;
     }
 }
