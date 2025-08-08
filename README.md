@@ -1,4 +1,4 @@
-# toolkit
+# Toolkit
 A website with multiple subservices as java/spring-boot practice, currently only including parts of a Poll System
 
 # Goals:
