@@ -9,11 +9,13 @@ import org.markoccini.toolkit.poll.model.Choice;
 import org.markoccini.toolkit.poll.model.Poll;
 import org.markoccini.toolkit.poll.repository.ChoiceRepository;
 import org.markoccini.toolkit.poll.repository.PollRepository;
+import org.markoccini.toolkit.poll.mapper.PollMapper;
+import org.markoccini.toolkit.poll.mapper.ChoiceMapper;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -31,7 +33,7 @@ public class PollService {
         List<Poll> polls = pollRepository.findAll();
         List<PollResponse> pollResponses = new ArrayList<>();
         for (Poll poll : polls) {
-            pollResponses.add(PollToPollResponseMapper(poll));
+            pollResponses.add(PollMapper.PollToPollResponseMapper(poll));
         }
         return pollResponses;
     }
@@ -39,7 +41,7 @@ public class PollService {
     public PollResponse getPollById(long id) throws Exception {
         Poll poll = pollRepository.findById(id).orElse(null);
         if (poll != null) {
-            return PollToPollResponseMapper(poll);
+            return PollMapper.PollToPollResponseMapper(poll);
         }
         else {
             throw new Exception("Poll with id " + id + " does not exist");
@@ -48,33 +50,35 @@ public class PollService {
 
     @Transactional
     public PollResponse createPoll(PollRequest pollRequest) {
-        Poll poll = PollRequestToPollMapper(pollRequest);
+        Poll poll = PollMapper.PollRequestToPollMapper(pollRequest);
 
         for (ChoiceRequest choiceRequest : pollRequest.getChoiceRequests()) {
-            Choice choice = ChoiceRequestToChoiceMapper(choiceRequest);
+            Choice choice = ChoiceMapper.ChoiceRequestToChoiceMapper(choiceRequest);
             choiceRepository.save(choice);
             poll.addChoice(choice);
         }
-        return PollToPollResponseMapper(pollRepository.save(poll));
+        return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
     }
+
+    //TODO: Implement with proper DTO Handling
 
     public Poll closePoll(Poll poll) {
         poll.closePoll();
         return pollRepository.save(poll);
     }
 
-    public Poll addChoice(Poll poll, Choice choice) {
+    public Poll addChoiceToPoll(Poll poll, Choice choice) {
         poll.addChoice(choice);
         return pollRepository.save(poll);
     }
 
-    public Poll removeChoice(Poll poll, Choice choice) {
+    public Poll removeChoiceFromPoll(Poll poll, Choice choice) {
         poll.removeChoice(choice);
         return  pollRepository.save(poll);
     }
 
     @Transactional
-    public Poll editQuestion(Poll poll, String question) {
+    public Poll editPollQuestion(Poll poll, String question) {
         poll.setQuestion(question);
         return pollRepository.save(poll);
     }
@@ -96,46 +100,5 @@ public class PollService {
     public Choice unvoteForChoice(Choice choice) {
         choice.decrementVotes();
         return choiceRepository.save(choice);
-    }
-
-    public Poll PollRequestToPollMapper(PollRequest pollRequest) {
-        assert pollRequest != null;
-
-        return Poll.builder()
-                .question(pollRequest.getQuestion())
-                .choices(new ArrayList<Choice>())
-                .build();
-    }
-
-    public Choice ChoiceRequestToChoiceMapper(ChoiceRequest choiceRequest) {
-
-        return Choice.builder()
-                .content(choiceRequest.getContent())
-                .build();
-        }
-
-    public ChoiceResponse ChoiceToChoiceResponseMapper(Choice choice) {
-        return ChoiceResponse.builder()
-                .content(choice.getContent())
-                .votes(choice.getVotes())
-                .createdAt(choice.getCreatedAt())
-                .pollResponse(PollToPollResponseMapper(choice.getPoll()))
-                .build();
-    }
-
-    public PollResponse PollToPollResponseMapper(Poll poll) {
-        ArrayList<Long> choiceIds = new ArrayList<>();
-
-        if (poll.getChoices() != null) {
-            choiceIds = poll.getChoices().stream()
-                    .map(Choice::getId)
-                    .collect(Collectors.toCollection(ArrayList::new));
-        }
-        return PollResponse.builder()
-                .id(poll.getId())
-                .question(poll.getQuestion())
-                .choiceIds(choiceIds)
-                .createdAt(poll.getCreatedAt())
-                .build();
     }
 }
