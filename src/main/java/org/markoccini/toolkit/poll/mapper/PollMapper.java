@@ -20,18 +20,24 @@ public class PollMapper {
     }
 
     public static PollResponse PollToPollResponseMapper(Poll poll) {
-        ArrayList<Long> choiceIds = new ArrayList<>();
+        ArrayList<ChoiceResponse> choiceResponses = new ArrayList<>();
+        List<Choice> choices = poll.getChoices();
 
-        if (poll.getChoices() != null) {
-            choiceIds = poll.getChoices().stream()
-                    .map(Choice::getId)
+        if (choices != null && !choices.isEmpty()) {
+            choiceResponses = choices.stream()
+                    .map(ChoiceMapper::ChoiceToChoiceResponseMapper)
                     .collect(Collectors.toCollection(ArrayList::new));
         }
+        else {
+            choiceResponses = new ArrayList<>();
+        }
+
         return PollResponse.builder()
                 .id(poll.getId())
                 .question(poll.getQuestion())
-                .choiceIds(choiceIds)
+                .choiceResponses(choiceResponses)
                 .createdAt(poll.getCreatedAt())
+                .isClosed(poll.isClosed())
                 .build();
     }
 

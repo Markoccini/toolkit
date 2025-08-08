@@ -14,8 +14,7 @@ public class PollResponse {
     private Long id;
     @NotBlank(message = "Question needs to be set")
     private String question;
-    @NotBlank(message = "Creation data is required")
-    private List<Long> choiceIds;
+    @NotBlank(message = "Creation date is required")
     private Instant createdAt;
     private List<ChoiceResponse> choiceResponses;
     private boolean isClosed;
