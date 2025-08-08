@@ -75,11 +75,20 @@ public class PollService {
             throw new Exception("Could not find poll with id " + pollId);
         }
     }
-
-    public Poll addChoiceToPoll(Poll poll, Choice choice) {
-        poll.addChoice(choice);
-        return pollRepository.save(poll);
+    @Transactional
+    public PollResponse addChoiceToPoll(long pollId, ChoiceRequest choiceRequest) throws Exception {
+        Poll poll = pollRepository.findById(pollId).orElse(null);
+        if (poll != null) {
+            poll.addChoice(ChoiceMapper.ChoiceRequestToChoiceMapper(choiceRequest));
+            return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
+        }
+        else {
+            throw new Exception("Could not find poll with id " + pollId);
+        }
     }
+
+    // TODO: Implement with proper DTO Handling
+
 
     public Poll removeChoiceFromPoll(Poll poll, Choice choice) {
         poll.removeChoice(choice);
@@ -87,9 +96,15 @@ public class PollService {
     }
 
     @Transactional
-    public Poll editPollQuestion(Poll poll, String question) {
-        poll.setQuestion(question);
-        return pollRepository.save(poll);
+    public PollResponse editPollQuestion(Long pollId, String question) throws Exception {
+        Poll poll = pollRepository.findById(pollId).orElse(null);
+        if (poll != null) {
+            poll.setQuestion(question);
+            return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
+        }
+        else {
+            throw new Exception("Could not find poll with id " + pollId);
+        }
     }
 
     public void deletePoll(long id) {
