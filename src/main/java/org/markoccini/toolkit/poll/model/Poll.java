@@ -3,8 +3,7 @@ package org.markoccini.toolkit.poll.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class Poll {
     @Setter
     private String question;
 
-    private final ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Europe/Berlin"));
+    private final Instant createdAt = Instant.now();
 
     @Builder.Default
     private boolean isClosed = false;

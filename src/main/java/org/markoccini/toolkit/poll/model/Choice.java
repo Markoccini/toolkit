@@ -4,8 +4,7 @@ package org.markoccini.toolkit.poll.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "choices", schema = "polls")
@@ -25,7 +24,7 @@ public class Choice {
     @Builder.Default
     private Long votes = 0L;
 
-    private final ZonedDateTime createdAt = ZonedDateTime.now(ZoneId.of("Europe/Berlin"));
+    private final Instant createdAt = Instant.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "poll_id")
