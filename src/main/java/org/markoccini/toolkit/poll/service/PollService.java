@@ -60,7 +60,7 @@ public class PollService {
         return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
     }
 
-    //TODO: Implement with proper DTO Handling
+    // TODO: Implement with proper DTO Handling
 
     public Poll closePoll(Poll poll) {
         poll.closePoll();
