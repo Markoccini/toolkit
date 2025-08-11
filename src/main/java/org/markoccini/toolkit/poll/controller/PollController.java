@@ -32,34 +32,58 @@ public class PollController {
         return pollService.getPollById(pollId);
     }
 
-    @Operation(tags = {"POST"})
+    @Operation(tags = {"POLL"})
     @PostMapping
     public PollResponse createPoll(@RequestBody PollRequest pollRequest) {
         return pollService.createPoll(pollRequest);
     }
 
-    @Operation(tags = {"PATCH"})
-    @PatchMapping("/{pollId}/update-question")
+    @Operation(tags = {"POLL"})
+    @PatchMapping("/{pollId}")
     public PollResponse updatePoll(
             @PathVariable("pollId") Long pollId,
-            @RequestBody String newQuestion
+            @RequestBody String new_question
     ) throws Exception {
-        return pollService.editPollQuestion(pollId, newQuestion);
+        return pollService.editPollQuestion(pollId, new_question);
     }
 
-    @Operation(tags = {"POST"})
-    @PostMapping("/{pollId}/add-choice")
+    @Operation(tags = {"POLL"})
+    @PatchMapping("/{pollId}/close")
+    public PollResponse closePoll(@PathVariable Long pollId) throws Exception {
+        return pollService.closePoll(pollId);
+    }
+
+    @Operation(tags = {"POLL"})
+    @DeleteMapping("/{pollId}")
+    public long deletePoll(@PathVariable Long pollId) throws Exception {
+        return pollService.deletePoll(pollId);
+    }
+
+    @Operation(tags = {"CHOICE"})
+    @PostMapping("/{pollId}/choices")
     public PollResponse addChoiceToPoll(
             @PathVariable("pollId") Long pollId,
             @RequestBody ChoiceRequest choiceRequest
     ) throws Exception {
-        return pollService.addChoiceToPoll(pollId, choiceRequest);
+        return pollService.addChoice(pollId, choiceRequest);
     }
 
+    @Operation(tags = {"CHOICE"})
+    @PatchMapping("/{pollId}/choices/{choiceId}")
+    public PollResponse editChoice(
+            @PathVariable long pollId,
+            @PathVariable long choiceId,
+            String new_content
+    ) throws Exception {
+        return pollService.changeChoice(pollId, choiceId, new_content);
+    }
 
-    @Operation(tags = {"PATCH"})
-    @PatchMapping("/{pollId}/close-poll")
-    public PollResponse closePoll(@PathVariable Long pollId) throws Exception {
-        return pollService.closePoll(pollId);
+    @Operation(tags = {"CHOICE"})
+    @DeleteMapping("/{pollId}/choices/{choiceId}")
+    public PollResponse removeChoiceFromPoll(
+            @PathVariable("pollId") Long pollId,
+            @PathVariable long choiceId
+    ) throws Exception {
+        return pollService.removeChoice(pollId, choiceId);
     }
 }
