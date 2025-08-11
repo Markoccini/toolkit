@@ -8,6 +8,7 @@ import java.time.Instant;
 @Data
 @Builder
 public class ChoiceResponse {
+    private long id;
     private String content;
     private Long votes;
     private Instant createdAt;

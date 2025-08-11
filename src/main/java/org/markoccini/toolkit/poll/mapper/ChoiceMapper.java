@@ -16,6 +16,7 @@ public class ChoiceMapper {
 
     public static ChoiceResponse ChoiceToChoiceResponseMapper(Choice choice) {
         return ChoiceResponse.builder()
+                .id(choice.getId())
                 .content(choice.getContent())
                 .votes(choice.getVotes())
                 .createdAt(choice.getCreatedAt())
