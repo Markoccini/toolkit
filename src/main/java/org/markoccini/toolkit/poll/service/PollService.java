@@ -1,6 +1,7 @@
 package org.markoccini.toolkit.poll.service;
 
 import jakarta.transaction.Transactional;
+import org.apache.coyote.BadRequestException;
 import org.markoccini.toolkit.poll.dto.ChoiceRequest;
 import org.markoccini.toolkit.poll.dto.ChoiceResponse;
 import org.markoccini.toolkit.poll.dto.PollRequest;
@@ -48,7 +49,6 @@ public class PollService {
         }
     }
 
-    @Transactional
     public PollResponse createPoll(PollRequest pollRequest) {
         Poll poll = PollMapper.PollRequestToPollMapper(pollRequest);
 
@@ -64,7 +64,6 @@ public class PollService {
         return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
     }
 
-    @Transactional
     public PollResponse closePoll(Long pollId) throws Exception {
         Poll poll =  pollRepository.findById(pollId).orElse(null);
         if (poll != null) {
@@ -75,47 +74,71 @@ public class PollService {
             throw new Exception("Could not find poll with id " + pollId);
         }
     }
-    @Transactional
-    public PollResponse addChoiceToPoll(long pollId, ChoiceRequest choiceRequest) throws Exception {
-        Poll poll = pollRepository.findById(pollId).orElse(null);
-        if (poll != null) {
+
+    public PollResponse addChoice(long pollId, ChoiceRequest choiceRequest) throws Exception {
+        Poll poll =  pollRepository.findById(pollId)
+                .orElseThrow(() -> new Exception("Could not find poll with id " + pollId));
+        if (choiceRequest != null && choiceRequest.getContent() != null && !choiceRequest.getContent().isEmpty()) {
             poll.addChoice(ChoiceMapper.ChoiceRequestToChoiceMapper(choiceRequest));
             return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
         }
         else {
-            throw new Exception("Could not find poll with id " + pollId);
+            throw new BadRequestException("No Choice provided");
         }
     }
 
-    // TODO: Implement with proper DTO Handling
-
-
-    public Poll removeChoiceFromPoll(Poll poll, Choice choice) {
+    public PollResponse removeChoice(long pollId, long choiceId) throws Exception {
+        Poll poll =  pollRepository.findById(pollId)
+                .orElseThrow(() -> new Exception("Could not find poll with id " + pollId));
+        Choice choice =  choiceRepository.findById(choiceId)
+                .orElseThrow(() -> new Exception("Could not find choice with id " + choiceId));
+        if (!choice.getPoll().getId().equals(poll.getId())) {
+            throw new BadRequestException("Choice with id " + choiceId + " does not belong to poll with id " + pollId);
+        }
         poll.removeChoice(choice);
-        return  pollRepository.save(poll);
+        return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
+    }
+
+    public PollResponse editPollQuestion(Long pollId, String question) throws Exception {
+        Poll poll =  pollRepository.findById(pollId)
+                .orElseThrow(() -> new Exception("Could not find poll with id " + pollId));
+        if (question == null) {
+            throw new BadRequestException("No new Question provided");
+        }
+        poll.setQuestion(question);
+        return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
+        }
+
+    public long deletePoll(long id) throws Exception{
+        Poll poll = pollRepository.findById(id).orElse(null);
+        if (poll != null) {
+            pollRepository.deleteById(id);
+            return id;
+        }
+        else {
+            throw new Exception("Could not find poll with id " + id);
+        }
+    }
+
+    public PollResponse changeChoice(long pollId, long choiceId, String new_content) throws Exception {
+        Poll poll = pollRepository.findById(pollId).orElse(null);
+        if (poll != null) {
+            Choice choice = choiceRepository.findById(choiceId).orElse(null);
+            if (choice != null) {
+                choice.setContent(new_content);
+                choiceRepository.save(choice);
+                return PollMapper.PollToPollResponseMapper(poll);
+            }
+            else {
+                throw new Exception("Could not find choice with id " + choiceId);
+            }
+        }
+        else {
+            throw new Exception("Cannot find Poll with id " + pollId);
+        }
     }
 
     @Transactional
-    public PollResponse editPollQuestion(Long pollId, String question) throws Exception {
-        Poll poll = pollRepository.findById(pollId).orElse(null);
-        if (poll != null) {
-            poll.setQuestion(question);
-            return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
-        }
-        else {
-            throw new Exception("Could not find poll with id " + pollId);
-        }
-    }
-
-    public void deletePoll(long id) {
-        pollRepository.deleteById(id);
-    }
-
-    public Choice changeChoice(Choice choice, String new_content) {
-        choice.setContent(new_content);
-        return choiceRepository.save(choice);
-    }
-
     public Choice voteForChoice(Choice choice) {
         choice.incrementVotes();
         return choiceRepository.save(choice);
