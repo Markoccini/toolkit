@@ -19,7 +19,7 @@ A website with multiple subservices as java/spring-boot practice, currently only
 - `docker compose down -v` (removes volumes so that no data can be reused when rebuilding the container)
 - `docker compose up -d` (Rebuild Container)
 - `docker exec -it postgres-toolkit bash` (Get into Container Shell)
-- `psql -U root` (login)
-- `CREATE DATABASE toolkit;` (Create DB, now you can run `docker compose down` and can run the App normally. After DB
-   is created, the makefile command `make login` also works to conveniently log into db as root)
+- `psql -U root -d toolkit` (login)
+- `CREATE SCHEMA polls;` (Creates schema polls in db, needs to be run once after first initializing the project)
+- 
 
