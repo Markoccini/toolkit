@@ -86,4 +86,22 @@ public class PollController {
     ) throws Exception {
         return pollService.removeChoice(pollId, choiceId);
     }
+
+    @Operation(tags = {"Vote"})
+    @PatchMapping("/{pollId}/choices/{choiceId}/vote")
+    public PollResponse addVote(
+            @PathVariable("pollId") Long pollId,
+            @PathVariable long choiceId
+    ) throws Exception {
+        return pollService.voteForChoice(pollId, choiceId);
+    }
+
+    @Operation(tags = {"Vote"})
+    @PatchMapping("/{pollId}/choices/{choiceId}/unvote")
+    public PollResponse removeVote(
+            @PathVariable("pollId") Long pollId,
+            @PathVariable long choiceId
+    ) throws Exception {
+        return pollService.removeVoteFromChoice(pollId, choiceId);
+    }
 }
