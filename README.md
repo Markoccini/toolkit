@@ -1,10 +1,11 @@
 # Toolkit
+Small Project for the sake of learning Java & Spring-Boot
 A website with multiple subservices as java/spring-boot practice, currently only including parts of a Poll System
 
 # Goals:
-- [ ] Fully Implement Backend for Polls and Choices, maybe statistics for the votes of each Choice
-- [ ] Proper Exception Handling
-- [ ] Communicating with an external API (Currency Exchance)
+- [x] Fully Implement Backend for Polls and Choices, maybe statistics for the votes of each Choice
+- [ ] Fleshed out Exception Handling
+- [ ] Communicating with an external API? (Currency Exchange)
 - [ ] Build a Frontend using Vue.js, Vite & Tailwind CSS
 - [ ] Maybe a Login?
 # Useful commands
@@ -21,5 +22,3 @@ A website with multiple subservices as java/spring-boot practice, currently only
 - `docker exec -it postgres-toolkit bash` (Get into Container Shell)
 - `psql -U root -d toolkit` (login)
 - `CREATE SCHEMA polls;` (Creates schema polls in db, needs to be run once after first initializing the project)
-- 
-
