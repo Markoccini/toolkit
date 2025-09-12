@@ -1,23 +1,30 @@
 services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/toolkit
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: admin
   db:
-    container_name: postgres-toolkit
+    container_name: toolkit-db
     image: postgres:latest
     environment:
       POSTGRES_DB: toolkit
       POSTGRES_USER: root
       POSTGRES_PASSWORD: admin
-      PGDATA: /data/postgres
     volumes:
-      - db:/data/postgres
+      - db-data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+
     ports:
       - "5432:5432"
-    networks:
-      - db
     restart: unless-stopped
 
-networks:
-  db:
-    driver: bridge
-
 volumes:
-  db:
+  db-data:
