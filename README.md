@@ -4,21 +4,11 @@ A website with multiple subservices as java/spring-boot practice, currently only
 
 # Goals:
 - [x] Fully Implement Backend for Polls and Choices, maybe statistics for the votes of each Choice
-- [ ] Fleshed out Exception Handling
-- [ ] Communicating with an external API? (Currency Exchange)
 - [ ] Build a Frontend using Vue.js, Vite & Tailwind CSS
+- [ ] Proper Exception Handling
+- [ ] Communicating with an external API (Currency Exchange)
 - [ ] Maybe a Login?
-# Useful commands
-- get into db-container: `docker exec -it postgres-toolkit bash`
-- get into root: `psql -U root`
-- create database: `CREATE DATABASE toolkit;`
-- get into database: `\connect toolkit`
-- create schema: `CREATE SCHEMA <schema-name>`
-- See table overview: `\dt polls.*`
 
-# Resetting the Database
-- `docker compose down -v` (removes volumes so that no data can be reused when rebuilding the container)
-- `docker compose up -d` (Rebuild Container)
-- `docker exec -it postgres-toolkit bash` (Get into Container Shell)
-- `psql -U root -d toolkit` (login)
-- `CREATE SCHEMA polls;` (Creates schema polls in db, needs to be run once after first initializing the project)
+# Good to know
+- After loading up the app and db, the swagger ui is accessible via
+  `http://127.0.0.1:8080/swagger-ui/index.html` or `http://127.0.0.1:8080/docs` (redirect)
