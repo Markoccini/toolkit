@@ -15,9 +15,10 @@ public class PollController {
 
     final PollService pollService;
 
-    public PollController(PollService pollService) {
+    public PollController(
+            PollService pollService
+    ) {
         this.pollService = pollService;
-
     }
 
     @Operation(tags = {"GET"})
@@ -28,13 +29,17 @@ public class PollController {
 
     @Operation(tags = {"GET"})
     @GetMapping("/{pollId}")
-    public PollResponse getPoll(@PathVariable("pollId") Long pollId) throws Exception {
+    public PollResponse getPoll(
+            @PathVariable("pollId") Long pollId
+    ) throws Exception {
         return pollService.getPollById(pollId);
     }
 
     @Operation(tags = {"POLL"})
     @PostMapping
-    public PollResponse createPoll(@RequestBody PollRequest pollRequest) {
+    public PollResponse createPoll(
+            @RequestBody PollRequest pollRequest
+    ) {
         return pollService.createPoll(pollRequest);
     }
 
@@ -42,20 +47,24 @@ public class PollController {
     @PatchMapping("/{pollId}")
     public PollResponse updatePoll(
             @PathVariable("pollId") Long pollId,
-            @RequestBody String new_question
+            @RequestBody PollRequest pollRequest
     ) throws Exception {
-        return pollService.editPollQuestion(pollId, new_question);
+        return pollService.editPollQuestion(pollId, pollRequest.getQuestion());
     }
 
     @Operation(tags = {"POLL"})
     @PatchMapping("/{pollId}/close")
-    public PollResponse closePoll(@PathVariable Long pollId) throws Exception {
+    public PollResponse closePoll(
+            @PathVariable Long pollId
+    ) throws Exception {
         return pollService.closePoll(pollId);
     }
 
     @Operation(tags = {"POLL"})
     @DeleteMapping("/{pollId}")
-    public long deletePoll(@PathVariable Long pollId) throws Exception {
+    public long deletePoll(
+            @PathVariable Long pollId
+    ) throws Exception {
         return pollService.deletePoll(pollId);
     }
 
