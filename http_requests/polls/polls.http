@@ -1,0 +1,76 @@
+@id = 1
+
+### GET: All Polls
+GET http://127.0.0.1:8080/api/v1/polls
+
+### GET: Poll by ID (Make sure it exists first)
+GET http://127.0.0.1:8080/api/v1/polls/{{id}}
+
+### POST: Poll GENERIC
+POST http://127.0.0.1:8080/api/v1/polls
+Content-Type: application/json
+
+{
+  "question": "Frage",
+  "choiceRequests": [
+    {
+      "content": "Antwort 1"
+    },
+    {
+      "content": "Antwort 2"
+    }
+  ]
+}
+
+
+### POST: Poll DATASET 1
+POST http://127.0.0.1:8080/api/v1/polls
+Content-Type: application/json
+
+{
+  "question": "Hunde oder Katzen?",
+  "choiceRequests": [
+    {
+      "content": "Hunde"
+    },
+    {
+      "content": "Katzen"
+    }
+  ]
+}
+
+### POST: Poll DATASET 2
+POST http://127.0.0.1:8080/api/v1/polls
+Content-Type: application/json
+
+{
+  "question": "Lieblingsfarbe?",
+  "choiceRequests": [
+    {
+      "content": "Rot"
+    },
+    {
+      "content": "Grün"
+    },
+    {
+      "content": "Blau"
+    },
+    {
+      "content": "Gelb"
+    }
+  ]
+}
+
+### PUT: Close Poll by ID (Make sure it exists first)
+PATCH http://127.0.0.1:8080/api/v1/polls/{{ id }}/close
+
+### PUT: Change Poll Question by ID (Make sure it exists first)
+PATCH http://127.0.0.1:8080/api/v1/polls/{{ id }}
+Content-Type: application/json
+
+{
+  "question": "Neue Frage"
+}
+
+### DELETE POLL WITH ID 1
+DELETE http://127.0.0.1:8080/api/v1/polls/{{ id }}
