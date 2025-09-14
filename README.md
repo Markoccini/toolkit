@@ -1,6 +1,6 @@
 # Toolkit
-Small Project for the sake of learning Java & Spring-Boot
-A website with multiple subservices as java/spring-boot practice, currently only including parts of a Poll System
+Small Project for the sake of learning Java & Spring-Boot.
+A website with intended to have multiple subservices, currently only including the Backend of a Poll System
 
 # Goals:
 - [x] Fully Implement Backend for Polls and Choices, maybe statistics for the votes of each Choice
