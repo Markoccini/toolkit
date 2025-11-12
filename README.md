@@ -3,9 +3,10 @@ Small Project for the sake of learning Java & Spring-Boot.
 A website with intended to have multiple subservices, currently only including the Backend of a Poll System
 
 # Goals:
-- [x] Fully Implement Backend for Polls and Choices, maybe statistics for the votes of each Choice
+- [x] Fully Implement Backend for Polls and Choices
+- [ ] percentages for the votes of each Choice
 - [ ] Build a Frontend using Vue.js, Vite & Tailwind CSS
-- [ ] Proper Exception Handling
+- [x] Proper Exception Handling
 - [ ] Communicating with an external API (Currency Exchange)
 - [ ] Maybe a Login?
 
