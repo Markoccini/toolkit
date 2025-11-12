@@ -36,11 +36,9 @@ public class PollService {
 
     public List<PollResponse> getAllPolls() {
         List<Poll> polls = pollRepository.findAll();
-        List<PollResponse> pollResponses = new ArrayList<>();
-        for (Poll poll : polls) {
-            pollResponses.add(PollMapper.PollToPollResponseMapper(poll));
-        }
-        return pollResponses;
+        return polls.stream()
+                .map(PollMapper::PollToPollResponseMapper)
+                .collect(Collectors.toList());
     }
 
     public PollResponse getPollById(long pollId) {
