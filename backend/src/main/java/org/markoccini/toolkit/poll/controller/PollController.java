@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.markoccini.toolkit.poll.dto.ChoiceRequest;
 import org.markoccini.toolkit.poll.dto.PollRequest;
 import org.markoccini.toolkit.poll.dto.PollResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.markoccini.toolkit.poll.service.PollService;
@@ -23,94 +25,116 @@ public class PollController {
 
     @Operation(tags = {"GET"})
     @GetMapping("")
-    public List<PollResponse> getPolls() {
-        return pollService.getAllPolls();
+    public ResponseEntity<List<PollResponse>> getPolls() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pollService.getAllPolls());
     }
 
     @Operation(tags = {"GET"})
     @GetMapping("/{pollId}")
-    public PollResponse getPoll(
+    public ResponseEntity<PollResponse> getPoll(
             @PathVariable("pollId") Long pollId
-    ) throws Exception {
-        return pollService.getPollById(pollId);
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pollService.getPollById(pollId));
     }
 
     @Operation(tags = {"POLL"})
     @PostMapping
-    public PollResponse createPoll(
+    public ResponseEntity<PollResponse> createPoll(
             @RequestBody PollRequest pollRequest
     ) {
-        return pollService.createPoll(pollRequest);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                        .body(pollService.createPoll(pollRequest));
     }
 
     @Operation(tags = {"POLL"})
     @PatchMapping("/{pollId}")
-    public PollResponse updatePoll(
+    public ResponseEntity<PollResponse> updatePoll(
             @PathVariable("pollId") Long pollId,
             @RequestBody PollRequest pollRequest
-    ) throws Exception {
-        return pollService.editPollQuestion(pollId, pollRequest.getQuestion());
+    )  {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pollService.editPollQuestion(pollId, pollRequest.getQuestion()));
     }
 
     @Operation(tags = {"POLL"})
     @PatchMapping("/{pollId}/close")
-    public PollResponse closePoll(
+    public ResponseEntity<PollResponse> closePoll(
             @PathVariable Long pollId
-    ) throws Exception {
-        return pollService.closePoll(pollId);
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pollService.closePoll(pollId));
     }
 
     @Operation(tags = {"POLL"})
     @DeleteMapping("/{pollId}")
-    public long deletePoll(
+    public ResponseEntity<Long> deletePoll(
             @PathVariable Long pollId
-    ) throws Exception {
-        return pollService.deletePoll(pollId);
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pollService.deletePoll(pollId));
     }
 
     @Operation(tags = {"CHOICE"})
     @PostMapping("/{pollId}/choices")
-    public PollResponse addChoiceToPoll(
+    public ResponseEntity<PollResponse> addChoiceToPoll(
             @PathVariable("pollId") Long pollId,
             @RequestBody ChoiceRequest choiceRequest
-    ) throws Exception {
-        return pollService.addChoice(pollId, choiceRequest);
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pollService.addChoice(pollId, choiceRequest));
     }
 
     @Operation(tags = {"CHOICE"})
     @PatchMapping("/{pollId}/choices/{choiceId}")
-    public PollResponse editChoice(
+    public ResponseEntity<PollResponse> editChoice(
             @PathVariable long pollId,
             @PathVariable long choiceId,
             String new_content
-    ) throws Exception {
-        return pollService.changeChoice(pollId, choiceId, new_content);
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pollService.changeChoice(pollId, choiceId, new_content));
     }
 
     @Operation(tags = {"CHOICE"})
     @DeleteMapping("/{pollId}/choices/{choiceId}")
-    public PollResponse removeChoiceFromPoll(
+    public ResponseEntity<PollResponse> removeChoiceFromPoll(
             @PathVariable("pollId") Long pollId,
             @PathVariable long choiceId
-    ) throws Exception {
-        return pollService.removeChoice(pollId, choiceId);
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pollService.removeChoice(pollId, choiceId));
     }
 
     @Operation(tags = {"Vote"})
     @PatchMapping("/{pollId}/choices/{choiceId}/vote")
-    public PollResponse addVote(
+    public ResponseEntity<PollResponse> addVote(
             @PathVariable("pollId") Long pollId,
             @PathVariable long choiceId
-    ) throws Exception {
-        return pollService.voteForChoice(pollId, choiceId);
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pollService.voteForChoice(pollId, choiceId));
     }
 
     @Operation(tags = {"Vote"})
     @PatchMapping("/{pollId}/choices/{choiceId}/unvote")
-    public PollResponse removeVote(
+    public ResponseEntity<PollResponse> removeVote(
             @PathVariable("pollId") Long pollId,
             @PathVariable long choiceId
-    ) throws Exception {
-        return pollService.removeVoteFromChoice(pollId, choiceId);
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(pollService.removeVoteFromChoice(pollId, choiceId));
     }
 }
