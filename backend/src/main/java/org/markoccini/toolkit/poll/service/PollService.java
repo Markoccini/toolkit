@@ -103,7 +103,7 @@ public class PollService {
         Choice choice = choiceRepository.findById(choiceId)
                 .orElseThrow(() -> new NotFoundException("Choice with id " + choiceId + " does not exist."));
         if (!choice.getPoll().getId().equals(poll.getId())) {
-            throw new BadRequestException("Choice with id " + choiceId + " does not belong to poll with id " + pollId);
+            throw new ServerErrorException("Choice with id " + choiceId + " does not belong to poll with id " + pollId);
         }
         poll.removeChoice(choice);
         try {
