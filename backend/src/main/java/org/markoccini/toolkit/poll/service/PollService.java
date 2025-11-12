@@ -1,7 +1,6 @@
 package org.markoccini.toolkit.poll.service;
 
 import jakarta.transaction.Transactional;
-import org.apache.coyote.BadRequestException;
 import org.markoccini.toolkit.poll.dto.ChoiceRequest;
 import org.markoccini.toolkit.poll.dto.PollRequest;
 import org.markoccini.toolkit.poll.dto.PollResponse;
