@@ -4,9 +4,14 @@ RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY pom.xml .
+COPY .mvn ./.mwvn
+COPY mvnw pom.xml ./
+
 RUN mvn dependency:go-offline
 
 COPY ./src ./src
 
-CMD ["mvn", "spring-boot:run"]
+CMD ["./mvnw", "spring-boot:run", "-Dspring-boot.run.profiles=dev", \
+     "-Dspring.devtools.restart.enabled=true", \
+     "-Dspring.devtools.livereload.enabled=true", \
+     "-Dspring.devtools.remote.secret=mysecret"]
