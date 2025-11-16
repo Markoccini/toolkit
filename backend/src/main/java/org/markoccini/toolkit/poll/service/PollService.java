@@ -104,10 +104,9 @@ public class PollService {
         Poll poll = pollWithOptionalChoice.getPoll();
         Choice choice = pollWithOptionalChoice.getOptionalChoice();
 
-        if (!choice.getPoll().getId().equals(poll.getId())) {
-            throw new ServerErrorException("Choice with id " + choiceId + " does not belong to poll with id " + pollId);
+        if (checkIfChoiceBelongsToPoll(poll, choice)) {
+            poll.removeChoice(choice);
         }
-        poll.removeChoice(choice);
         try {
             return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
         }
@@ -147,8 +146,9 @@ public class PollService {
         PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, choiceId, true);
         Poll poll = pollWithOptionalChoice.getPoll();
         Choice choice = pollWithOptionalChoice.getOptionalChoice();
-
-        choice.setContent(new_content);
+        if (checkIfChoiceBelongsToPoll(poll, choice)) {
+            choice.setContent(new_content);
+        }
         try {
             choiceRepository.save(choice);
             return PollMapper.PollToPollResponseMapper(poll);
@@ -162,8 +162,9 @@ public class PollService {
         PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, choiceId, true);
         Poll poll = pollWithOptionalChoice.getPoll();
         Choice choice = pollWithOptionalChoice.getOptionalChoice();
-
-        choice.incrementVotes();
+        if (checkIfChoiceBelongsToPoll(poll, choice)) {
+            choice.incrementVotes();
+        }
         try {
             choiceRepository.save(choice);
             return PollMapper.PollToPollResponseMapper(poll);
@@ -177,8 +178,9 @@ public class PollService {
         PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, choiceId, true);
         Poll poll = pollWithOptionalChoice.getPoll();
         Choice choice = pollWithOptionalChoice.getOptionalChoice();
-
-        choice.decrementVotes();
+        if (checkIfChoiceBelongsToPoll(poll, choice)) {
+            choice.decrementVotes();
+        }
         try {
             choiceRepository.save(choice);
             return PollMapper.PollToPollResponseMapper(poll);
@@ -205,6 +207,14 @@ public class PollService {
             return new PollWithOptionalChoice(poll, choice);
         } else {
             return new PollWithOptionalChoice(poll, null);
+        }
+    }
+
+    public boolean checkIfChoiceBelongsToPoll(Poll poll, Choice choice) {
+        if (!choice.getPoll().getId().equals(poll.getId())) {
+            throw new BadRequestException("Choice with id " + choice.getId() + " does not belong to poll with id " + poll.getId() + ".");
+        } else {
+            return true;
         }
     }
 }
