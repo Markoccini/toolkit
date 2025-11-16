@@ -89,16 +89,12 @@ public class PollService {
         PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, null, true);
         Poll poll = pollWithOptionalChoice.getPoll();
 
-        if (choiceRequest != null && choiceRequest.getContent() != null && !choiceRequest.getContent().isEmpty()) {
-            poll.addChoice(ChoiceMapper.ChoiceRequestToChoiceMapper(choiceRequest));
-            try {
-                return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
-            }
-            catch (DataIntegrityViolationException ex) {
-                throw new DatabaseException("Failed to save poll", ex);
-            }
-        } else {
-            throw new BadRequestException("No Choice provided");
+        poll.addChoice(ChoiceMapper.ChoiceRequestToChoiceMapper(choiceRequest));
+        try {
+            return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
+        }
+        catch (DataIntegrityViolationException ex) {
+            throw new DatabaseException("Failed to save poll", ex);
         }
     }
 
@@ -125,9 +121,6 @@ public class PollService {
         PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, null, true);
         Poll poll = pollWithOptionalChoice.getPoll();
 
-        if (question == null) {
-            throw new BadRequestException("No new Question provided");
-        }
         poll.setQuestion(question);
         try {
             return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));

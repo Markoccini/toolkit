@@ -1,5 +1,6 @@
 package org.markoccini.toolkit.poll.controller;
 
+import jakarta.validation.ConstraintViolationException;
 import org.markoccini.toolkit.common.exceptions.BadRequestException;
 import org.markoccini.toolkit.common.exceptions.DatabaseException;
 import org.markoccini.toolkit.common.exceptions.NotFoundException;
@@ -22,7 +23,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            BadRequestException.class
+            BadRequestException.class,
+            ConstraintViolationException.class
     })
     public ResponseEntity<Map<String, String>> handleBadRequestExceptions(Exception ex) {
         return  ResponseEntity

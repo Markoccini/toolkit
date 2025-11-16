@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PollRequest {
-    @NotBlank(message = "Question needs to be set")
+    @NotBlank(message = "Question cannot be empty")
     private String question;
     private List<ChoiceRequest> choiceRequests;
 }

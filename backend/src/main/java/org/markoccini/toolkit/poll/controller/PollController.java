@@ -1,11 +1,14 @@
 package org.markoccini.toolkit.poll.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.markoccini.toolkit.poll.dto.ChoiceRequest;
 import org.markoccini.toolkit.poll.dto.PollRequest;
 import org.markoccini.toolkit.poll.dto.PollResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import org.markoccini.toolkit.poll.service.PollService;
@@ -13,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/polls")
+@Validated
 public class PollController {
 
     final PollService pollService;
@@ -44,7 +48,7 @@ public class PollController {
     @Operation(tags = {"POLL"})
     @PostMapping
     public ResponseEntity<PollResponse> createPoll(
-            @RequestBody PollRequest pollRequest
+            @Valid @RequestBody PollRequest pollRequest
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -55,11 +59,11 @@ public class PollController {
     @PatchMapping("/{pollId}")
     public ResponseEntity<PollResponse> updatePoll(
             @PathVariable("pollId") Long pollId,
-            @RequestBody PollRequest pollRequest
+            @NotBlank @RequestBody String newQuestion
     )  {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(pollService.editPollQuestion(pollId, pollRequest.getQuestion()));
+                .body(pollService.editPollQuestion(pollId, newQuestion));
     }
 
     @Operation(tags = {"POLL"})
@@ -86,7 +90,7 @@ public class PollController {
     @PostMapping("/{pollId}/choices")
     public ResponseEntity<PollResponse> addChoiceToPoll(
             @PathVariable("pollId") Long pollId,
-            @RequestBody ChoiceRequest choiceRequest
+            @Valid @RequestBody ChoiceRequest choiceRequest
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -98,7 +102,7 @@ public class PollController {
     public ResponseEntity<PollResponse> editChoice(
             @PathVariable long pollId,
             @PathVariable long choiceId,
-            String new_content
+            @NotBlank @RequestBody String new_content
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
