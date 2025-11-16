@@ -4,7 +4,6 @@ import jakarta.validation.ConstraintViolationException;
 import org.markoccini.toolkit.common.exceptions.BadRequestException;
 import org.markoccini.toolkit.common.exceptions.DatabaseException;
 import org.markoccini.toolkit.common.exceptions.NotFoundException;
-import org.markoccini.toolkit.common.exceptions.ServerErrorException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

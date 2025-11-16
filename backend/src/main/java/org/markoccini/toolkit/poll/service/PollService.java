@@ -8,7 +8,6 @@ import org.markoccini.toolkit.poll.dto.PollResponse;
 import org.markoccini.toolkit.common.exceptions.BadRequestException;
 import org.markoccini.toolkit.common.exceptions.DatabaseException;
 import org.markoccini.toolkit.common.exceptions.NotFoundException;
-import org.markoccini.toolkit.common.exceptions.ServerErrorException;
 import org.markoccini.toolkit.poll.model.Choice;
 import org.markoccini.toolkit.poll.model.Poll;
 import org.markoccini.toolkit.poll.repository.ChoiceRepository;
