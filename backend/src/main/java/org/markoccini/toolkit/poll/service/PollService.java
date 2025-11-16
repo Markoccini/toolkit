@@ -1,6 +1,7 @@
 package org.markoccini.toolkit.poll.service;
 
 import jakarta.transaction.Transactional;
+import org.markoccini.toolkit.poll.DataCollectionClasses.PollWithOptionalChoice;
 import org.markoccini.toolkit.poll.dto.ChoiceRequest;
 import org.markoccini.toolkit.poll.dto.PollRequest;
 import org.markoccini.toolkit.poll.dto.PollResponse;
@@ -33,6 +34,7 @@ public class PollService {
         this.choiceRepository = choiceRepository;
     }
 
+
     public List<PollResponse> getAllPolls() {
         List<Poll> polls = pollRepository.findAll();
         return polls.stream()
@@ -41,8 +43,10 @@ public class PollService {
     }
 
     public PollResponse getPollById(long pollId) {
-        Poll poll = pollRepository.findById(pollId)
-                .orElseThrow(() -> new NotFoundException("Poll with id " + pollId + " does not exist."));
+
+        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, null, false);
+        Poll poll = pollWithOptionalChoice.getPoll();
+
         return PollMapper.PollToPollResponseMapper(poll);
     }
 
@@ -67,11 +71,10 @@ public class PollService {
     }
 
     public PollResponse closePoll(Long pollId) {
-        Poll poll = pollRepository.findById(pollId)
-                .orElseThrow(() -> new NotFoundException("Poll with id " + pollId + " does not exist."));
-        if (poll.isClosed()) {
-            throw new BadRequestException("Poll with id " + pollId + "is already closed.");
-        }
+
+        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, null, true);
+        Poll poll = pollWithOptionalChoice.getPoll();
+
         poll.closePoll();
         try {
             return PollMapper.PollToPollResponseMapper(pollRepository.save(poll));
@@ -82,8 +85,10 @@ public class PollService {
     }
 
     public PollResponse addChoice(long pollId, ChoiceRequest choiceRequest) {
-        Poll poll = pollRepository.findById(pollId)
-                .orElseThrow(() -> new NotFoundException("Poll with id " + pollId + " does not exist."));
+
+        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, null, true);
+        Poll poll = pollWithOptionalChoice.getPoll();
+
         if (choiceRequest != null && choiceRequest.getContent() != null && !choiceRequest.getContent().isEmpty()) {
             poll.addChoice(ChoiceMapper.ChoiceRequestToChoiceMapper(choiceRequest));
             try {
@@ -98,10 +103,11 @@ public class PollService {
     }
 
     public PollResponse removeChoice(long pollId, long choiceId) {
-        Poll poll = pollRepository.findById(pollId)
-                .orElseThrow(() -> new NotFoundException("Poll with id " + pollId + " does not exist."));
-        Choice choice = choiceRepository.findById(choiceId)
-                .orElseThrow(() -> new NotFoundException("Choice with id " + choiceId + " does not exist."));
+
+        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, choiceId, true);
+        Poll poll = pollWithOptionalChoice.getPoll();
+        Choice choice = pollWithOptionalChoice.getOptionalChoice();
+
         if (!choice.getPoll().getId().equals(poll.getId())) {
             throw new ServerErrorException("Choice with id " + choiceId + " does not belong to poll with id " + pollId);
         }
@@ -115,8 +121,10 @@ public class PollService {
     }
 
     public PollResponse editPollQuestion(Long pollId, String question) {
-        Poll poll = pollRepository.findById(pollId)
-                .orElseThrow(() -> new NotFoundException("Poll with id " + pollId + " does not exist."));
+
+        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, null, true);
+        Poll poll = pollWithOptionalChoice.getPoll();
+
         if (question == null) {
             throw new BadRequestException("No new Question provided");
         }
@@ -130,8 +138,8 @@ public class PollService {
     }
 
     public long deletePoll(long pollId) {
-        pollRepository.findById(pollId)
-                .orElseThrow(() -> new NotFoundException("Poll with id " + pollId + " does not exist."));
+
+        loadPollAndMaybeChoice(pollId, null, false);
 
         try {
             pollRepository.deleteById(pollId);
@@ -142,10 +150,11 @@ public class PollService {
     }
 
     public PollResponse changeChoice(long pollId, long choiceId, String new_content) {
-        Poll poll = pollRepository.findById(pollId)
-                .orElseThrow(() -> new NotFoundException("Poll with id " + pollId + " does not exist."));
-        Choice choice = choiceRepository.findById(choiceId)
-                .orElseThrow(() -> new NotFoundException("Choice with id " + choiceId + " does not exist."));
+
+        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, choiceId, true);
+        Poll poll = pollWithOptionalChoice.getPoll();
+        Choice choice = pollWithOptionalChoice.getOptionalChoice();
+
         choice.setContent(new_content);
         try {
             choiceRepository.save(choice);
@@ -156,10 +165,11 @@ public class PollService {
     }
 
     public PollResponse voteForChoice(long pollId, long choiceId) {
-        Poll poll = pollRepository.findById(pollId)
-                .orElseThrow(() -> new NotFoundException("Poll with id " + pollId + " does not exist."));
-        Choice choice = choiceRepository.findById(choiceId)
-                .orElseThrow(() -> new NotFoundException("Choice with id " + choiceId + " does not exist."));
+
+        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, choiceId, true);
+        Poll poll = pollWithOptionalChoice.getPoll();
+        Choice choice = pollWithOptionalChoice.getOptionalChoice();
+
         choice.incrementVotes();
         try {
             choiceRepository.save(choice);
@@ -170,16 +180,38 @@ public class PollService {
     }
 
     public PollResponse removeVoteFromChoice(long pollId, long choiceId) {
-        Poll poll = pollRepository.findById(pollId)
-                .orElseThrow(() -> new NotFoundException("Poll with id " + pollId + " does not exist."));
-        Choice choice = choiceRepository.findById(choiceId)
-                .orElseThrow(() -> new NotFoundException("Choice with id " + choiceId + " does not exist."));
+
+        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(pollId, choiceId, true);
+        Poll poll = pollWithOptionalChoice.getPoll();
+        Choice choice = pollWithOptionalChoice.getOptionalChoice();
+
         choice.decrementVotes();
         try {
             choiceRepository.save(choice);
             return PollMapper.PollToPollResponseMapper(poll);
         } catch (DataIntegrityViolationException ex) {
             throw new DatabaseException("Failed to save poll", ex);
+        }
+    }
+
+    public PollWithOptionalChoice loadPollAndMaybeChoice(
+            long pollId,
+            Long choiceId,
+            boolean checkIfPollIsClosed
+    ) {
+        Poll poll = pollRepository.findById(pollId)
+                .orElseThrow(() -> new NotFoundException("Poll with id " + pollId + " does not exist."));
+        if (checkIfPollIsClosed) {
+            if (poll.isClosed()) {
+                throw new BadRequestException("Poll with id " + pollId + " is already closed and cannot be edited.");
+            }
+        }
+        if (choiceId != null) {
+            Choice choice = choiceRepository.findById(choiceId)
+                    .orElseThrow(() -> new NotFoundException("Choice with id " + choiceId + " does not exist."));
+            return new PollWithOptionalChoice(poll, choice);
+        } else {
+            return new PollWithOptionalChoice(poll, null);
         }
     }
 }
