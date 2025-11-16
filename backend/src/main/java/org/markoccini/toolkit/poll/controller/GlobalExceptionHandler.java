@@ -32,15 +32,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            ServerErrorException.class,
-    })
-    public ResponseEntity<Map<String, String>> handleServerErrorExceptions(Exception ex) {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("message", ex.getMessage()));
-    }
-
-    @ExceptionHandler({
             DatabaseException.class,
     })
     public ResponseEntity<Map<String, String>> handleDatabaseExceptions(Exception ex) {
