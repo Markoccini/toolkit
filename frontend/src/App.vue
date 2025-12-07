@@ -1,5 +1,5 @@
 <script setup>
-import Polls from './components/Polls.vue'
+import Polls from './components/Polls/PollList.vue'
 </script>
 
 <template>
