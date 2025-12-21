@@ -1,6 +1,6 @@
 # Toolkit
 Small Project for the sake of learning Java & Spring-Boot.
-A website with intended to have multiple subservices, currently only including the Backend of a Poll System
+A website intended to have multiple subservices, currently only including the Backend of a Poll System
 
 # Goals:
 - [ ] Add Patch Route for a Poll where the Choices can be changed along with the Poll Question
