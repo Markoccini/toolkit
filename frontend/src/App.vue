@@ -1,13 +1,13 @@
 <script setup>
-import Polls from './components/Polls/PollList.vue'
+import Navbar from './components/Navbar.vue'
 </script>
 
 <template>
-  <main>
-    <RouterView />
-  </main>
+  <Navbar></Navbar>
+
+  <RouterView />
+
 </template>
 
 <style scoped>
-
 </style>
