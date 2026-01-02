@@ -105,6 +105,11 @@ public class PollService {
             loadPollAndChoiceIfSpecified(pollId, null, true);
         Poll poll = pollWithOptionalChoice.getPoll();
 
+        if (poll.getChoices().size() >= 4) {
+            throw new BadRequestException(
+                "A poll cannot have more than 4 choices."
+            );
+        }
         poll.addChoice(ChoiceMapper.ChoiceRequestToChoiceMapper(choiceRequest));
         try {
             return PollMapper.PollToPollResponseMapper(
