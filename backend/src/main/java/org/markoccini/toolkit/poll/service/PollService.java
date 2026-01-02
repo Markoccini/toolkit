@@ -238,17 +238,6 @@ public class PollService {
         }
     }
 
-    public boolean checkIfChoiceBelongsToPoll(Poll poll, Choice choice) {
-        if (!choice.getPoll().getId().equals(poll.getId())) {
-            throw new BadRequestException(
-                "Choice with id " +
-                    choice.getId() +
-                    " does not belong to poll with id " +
-                    poll.getId() +
-                    "."
-            );
-        } else {
-            return true;
-        }
+        return new PollWithOptionalChoice(poll, choice);
     }
 }
