@@ -124,7 +124,9 @@ public class PollService {
         PollWithOptionalChoice pollWithOptionalChoice =
             loadPollAndChoiceIfSpecified(pollId, choiceId, true);
         Poll poll = pollWithOptionalChoice.getPoll();
-        Choice choice = pollWithOptionalChoice.getOptionalChoice();
+        Choice choice = pollWithOptionalChoice.getChoice();
+
+        poll.removeChoice(choice);
 
         if (checkIfChoiceBelongsToPoll(poll, choice)) {
             poll.removeChoice(choice);
@@ -142,10 +144,10 @@ public class PollService {
         PollWithOptionalChoice pollWithOptionalChoice =
             loadPollAndChoiceIfSpecified(pollId, choiceId, true);
         Poll poll = pollWithOptionalChoice.getPoll();
-        Choice choice = pollWithOptionalChoice.getOptionalChoice();
-        if (checkIfChoiceBelongsToPoll(poll, choice)) {
-            choice.incrementVotes();
-        }
+        Choice choice = pollWithOptionalChoice.getChoice();
+
+        choice.incrementVotes();
+
         try {
             choiceRepository.save(choice);
             return PollMapper.PollToPollResponseMapper(poll);
@@ -158,10 +160,10 @@ public class PollService {
         PollWithOptionalChoice pollWithOptionalChoice =
             loadPollAndChoiceIfSpecified(pollId, choiceId, true);
         Poll poll = pollWithOptionalChoice.getPoll();
-        Choice choice = pollWithOptionalChoice.getOptionalChoice();
-        if (checkIfChoiceBelongsToPoll(poll, choice)) {
-            choice.decrementVotes();
-        }
+        Choice choice = pollWithOptionalChoice.getChoice();
+
+        choice.decrementVotes();
+
         try {
             choiceRepository.save(choice);
             return PollMapper.PollToPollResponseMapper(poll);

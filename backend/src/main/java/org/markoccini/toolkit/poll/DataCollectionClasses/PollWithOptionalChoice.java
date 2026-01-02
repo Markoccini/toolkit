@@ -10,10 +10,10 @@ import org.markoccini.toolkit.poll.model.Poll;
 public class PollWithOptionalChoice {
 
     Poll poll;
-    Choice optionalChoice;
+    Choice choice;
 
     public PollWithOptionalChoice(Poll poll, Choice optionalChoice) {
         this.poll = poll;
-        this.optionalChoice = optionalChoice;
+        this.choice = optionalChoice;
     }
 }
