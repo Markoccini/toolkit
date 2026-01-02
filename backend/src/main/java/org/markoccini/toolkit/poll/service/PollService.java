@@ -170,10 +170,7 @@ public class PollService {
         }
 
         if (changes.getChoiceRequests() != null) {
-            if (
-                changes.getChoiceRequests() != null &&
-                changes.getChoiceRequests().size() > 4
-            ) {
+            if (changes.getChoiceRequests().size() > 4) {
                 throw new BadRequestException(
                     "A poll cannot have more than 4 choices."
                 );
