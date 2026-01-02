@@ -44,11 +44,8 @@ public class PollService {
     }
 
     public PollResponse getPollById(long pollId) {
-        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(
-            pollId,
-            null,
-            false
-        );
+        PollWithOptionalChoice pollWithOptionalChoice =
+            loadPollAndChoiceIfSpecified(pollId, null, false);
         Poll poll = pollWithOptionalChoice.getPoll();
 
         return PollMapper.PollToPollResponseMapper(poll);
@@ -78,11 +75,8 @@ public class PollService {
     }
 
     public PollResponse closePoll(Long pollId) {
-        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(
-            pollId,
-            null,
-            true
-        );
+        PollWithOptionalChoice pollWithOptionalChoice =
+            loadPollAndChoiceIfSpecified(pollId, null, true);
         Poll poll = pollWithOptionalChoice.getPoll();
 
         poll.closePoll();
@@ -96,7 +90,7 @@ public class PollService {
     }
 
     public long deletePoll(long pollId) {
-        loadPollAndMaybeChoice(pollId, null, false);
+        loadPollAndChoiceIfSpecified(pollId, null, false);
 
         try {
             pollRepository.deleteById(pollId);
@@ -107,11 +101,8 @@ public class PollService {
     }
 
     public PollResponse addChoice(long pollId, ChoiceRequest choiceRequest) {
-        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(
-            pollId,
-            null,
-            true
-        );
+        PollWithOptionalChoice pollWithOptionalChoice =
+            loadPollAndChoiceIfSpecified(pollId, null, true);
         Poll poll = pollWithOptionalChoice.getPoll();
 
         poll.addChoice(ChoiceMapper.ChoiceRequestToChoiceMapper(choiceRequest));
@@ -125,11 +116,8 @@ public class PollService {
     }
 
     public PollResponse removeChoice(long pollId, long choiceId) {
-        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(
-            pollId,
-            choiceId,
-            true
-        );
+        PollWithOptionalChoice pollWithOptionalChoice =
+            loadPollAndChoiceIfSpecified(pollId, choiceId, true);
         Poll poll = pollWithOptionalChoice.getPoll();
         Choice choice = pollWithOptionalChoice.getOptionalChoice();
 
@@ -146,11 +134,8 @@ public class PollService {
     }
 
     public PollResponse voteForChoice(long pollId, long choiceId) {
-        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(
-            pollId,
-            choiceId,
-            true
-        );
+        PollWithOptionalChoice pollWithOptionalChoice =
+            loadPollAndChoiceIfSpecified(pollId, choiceId, true);
         Poll poll = pollWithOptionalChoice.getPoll();
         Choice choice = pollWithOptionalChoice.getOptionalChoice();
         if (checkIfChoiceBelongsToPoll(poll, choice)) {
@@ -165,11 +150,8 @@ public class PollService {
     }
 
     public PollResponse removeVoteFromChoice(long pollId, long choiceId) {
-        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(
-            pollId,
-            choiceId,
-            true
-        );
+        PollWithOptionalChoice pollWithOptionalChoice =
+            loadPollAndChoiceIfSpecified(pollId, choiceId, true);
         Poll poll = pollWithOptionalChoice.getPoll();
         Choice choice = pollWithOptionalChoice.getOptionalChoice();
         if (checkIfChoiceBelongsToPoll(poll, choice)) {
@@ -184,11 +166,8 @@ public class PollService {
     }
 
     public PollResponse updatePollAndChoices(long pollId, PollRequest changes) {
-        PollWithOptionalChoice pollWithOptionalChoice = loadPollAndMaybeChoice(
-            pollId,
-            null,
-            true
-        );
+        PollWithOptionalChoice pollWithOptionalChoice =
+            loadPollAndChoiceIfSpecified(pollId, null, true);
         Poll poll = pollWithOptionalChoice.getPoll();
 
         if (changes.getQuestion() != null && !changes.getQuestion().isBlank()) {
@@ -229,7 +208,7 @@ public class PollService {
         }
     }
 
-    public PollWithOptionalChoice loadPollAndMaybeChoice(
+    public PollWithOptionalChoice loadPollAndChoiceIfSpecified(
         long pollId,
         Long choiceId,
         boolean pollClosedCheckNeeded
