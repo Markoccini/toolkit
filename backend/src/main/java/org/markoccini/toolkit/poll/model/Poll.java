@@ -1,14 +1,13 @@
 package org.markoccini.toolkit.poll.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
 
 @Entity
-@Table(name = "polls", schema= "polls")
+@Table(name = "polls", schema = "polls")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -29,13 +28,13 @@ public class Poll {
 
     @Builder.Default
     @OneToMany(
-            mappedBy = "poll",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+        mappedBy = "poll",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
     )
     private List<Choice> choices = new ArrayList<>();
 
-    public Poll (String question, List<Choice> choices) {
+    public Poll(String question, List<Choice> choices) {
         this.question = question;
         this.choices = choices;
     }
@@ -50,7 +49,7 @@ public class Poll {
     }
 
     public void closePoll() {
-        assert  !this.isClosed;
+        assert !this.isClosed;
         this.isClosed = true;
     }
 }
