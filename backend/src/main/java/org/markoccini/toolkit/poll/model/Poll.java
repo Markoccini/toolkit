@@ -27,6 +27,7 @@ public class Poll {
     @Builder.Default
     private boolean isClosed = false;
 
+    @Builder.Default
     @OneToMany(
             mappedBy = "poll",
             cascade = CascadeType.ALL,
