@@ -227,7 +227,10 @@ public class PollService {
                 .findFirst()
                 .orElseThrow(() ->
                     new NotFoundException(
-                        "Choice with id " + choiceId + " does not exist."
+                        "Choice with id " +
+                            choiceId +
+                            " does not exist in Poll " +
+                            pollId
                     )
                 );
         }
