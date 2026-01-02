@@ -218,6 +218,7 @@ public class PollService {
                 "Poll with id " + pollId + " is already closed."
             );
         }
+        Choice choice = null;
         if (choiceId != null) {
             choice = poll
                 .getChoices()
@@ -229,11 +230,7 @@ public class PollService {
                         "Choice with id " + choiceId + " does not exist."
                     )
                 );
-            return new PollWithOptionalChoice(poll, choice);
-        } else {
-            return new PollWithOptionalChoice(poll, null);
         }
-    }
 
         return new PollWithOptionalChoice(poll, choice);
     }
