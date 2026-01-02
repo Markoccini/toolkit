@@ -232,7 +232,7 @@ public class PollService {
     public PollWithOptionalChoice loadPollAndMaybeChoice(
         long pollId,
         Long choiceId,
-        boolean checkIfPollIsClosed
+        boolean pollClosedCheckNeeded
     ) {
         Poll poll = pollRepository
             .findById(pollId)
@@ -241,14 +241,11 @@ public class PollService {
                     "Poll with id " + pollId + " does not exist."
                 )
             );
-        if (checkIfPollIsClosed) {
-            if (poll.isClosed()) {
-                throw new BadRequestException(
-                    "Poll with id " +
-                        pollId +
-                        " is already closed and cannot be edited."
-                );
-            }
+
+        if (pollClosedCheckNeeded && poll.isClosed()) {
+            throw new BadRequestException(
+                "Poll with id " + pollId + " is already closed."
+            );
         }
         if (choiceId != null) {
             Choice choice = choiceRepository
