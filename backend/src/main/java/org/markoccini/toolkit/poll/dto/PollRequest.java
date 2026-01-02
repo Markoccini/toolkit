@@ -15,5 +15,11 @@ import java.util.List;
 public class PollRequest {
     @NotBlank(message = "Question cannot be empty")
     private String question;
+
+    @Size(
+        min = 2,
+        max = 4,
+        message = "A poll must have between 2 and 4 choices."
+    )
     private List<ChoiceRequest> choiceRequests;
 }
