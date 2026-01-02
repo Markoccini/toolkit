@@ -36,7 +36,7 @@ public class PollService {
     }
 
     public List<PollResponse> getAllPolls() {
-        List<Poll> polls = pollRepository.findAll();
+        List<Poll> polls = pollRepository.findAllWithChoices();
         return polls
             .stream()
             .map(PollMapper::PollToPollResponseMapper)
