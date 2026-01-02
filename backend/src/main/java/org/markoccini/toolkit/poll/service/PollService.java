@@ -15,7 +15,6 @@ import org.markoccini.toolkit.poll.mapper.ChoiceMapper;
 import org.markoccini.toolkit.poll.mapper.PollMapper;
 import org.markoccini.toolkit.poll.model.Choice;
 import org.markoccini.toolkit.poll.model.Poll;
-import org.markoccini.toolkit.poll.repository.ChoiceRepository;
 import org.markoccini.toolkit.poll.repository.PollRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -25,14 +24,9 @@ import org.springframework.stereotype.Service;
 public class PollService {
 
     private final PollRepository pollRepository;
-    private final ChoiceRepository choiceRepository;
 
-    public PollService(
-        PollRepository pollRepository,
-        ChoiceRepository choiceRepository
-    ) {
+    public PollService(PollRepository pollRepository) {
         this.pollRepository = pollRepository;
-        this.choiceRepository = choiceRepository;
     }
 
     public List<PollResponse> getAllPolls() {
@@ -62,7 +56,6 @@ public class PollService {
             Choice choice = ChoiceMapper.ChoiceRequestToChoiceMapper(
                 choiceRequest
             );
-            choiceRepository.save(choice);
             poll.addChoice(choice);
         }
         try {
@@ -128,9 +121,6 @@ public class PollService {
 
         poll.removeChoice(choice);
 
-        if (checkIfChoiceBelongsToPoll(poll, choice)) {
-            poll.removeChoice(choice);
-        }
         try {
             return PollMapper.PollToPollResponseMapper(
                 pollRepository.save(poll)
@@ -149,7 +139,6 @@ public class PollService {
         choice.incrementVotes();
 
         try {
-            choiceRepository.save(choice);
             return PollMapper.PollToPollResponseMapper(poll);
         } catch (DataIntegrityViolationException ex) {
             throw new DatabaseException("Failed to save poll", ex);
@@ -165,7 +154,6 @@ public class PollService {
         choice.decrementVotes();
 
         try {
-            choiceRepository.save(choice);
             return PollMapper.PollToPollResponseMapper(poll);
         } catch (DataIntegrityViolationException ex) {
             throw new DatabaseException("Failed to save poll", ex);
@@ -234,8 +222,11 @@ public class PollService {
             );
         }
         if (choiceId != null) {
-            Choice choice = choiceRepository
-                .findById(choiceId)
+            choice = poll
+                .getChoices()
+                .stream()
+                .filter(c -> c.getId().equals(choiceId))
+                .findFirst()
                 .orElseThrow(() ->
                     new NotFoundException(
                         "Choice with id " + choiceId + " does not exist."
